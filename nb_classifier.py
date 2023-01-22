@@ -36,6 +36,19 @@ class Classifier:
       self.bag_of_words_for_class[cls] = bag_of_words_for_class(samples, cls)
       self.vocab_for_class[cls] = set(self.bag_of_words_for_class[cls])
 
+  def word_prob(self, word, cls):
+    count_of_word_in_class = self.bag_of_words_for_class[cls].count(word)
+    count_of_words_in_bag = len(self.bag_of_words_for_class[cls])
+    vocabulary_size = len(self.vocab)
+    prob = (count_of_word_in_class + 1) / (count_of_words_in_bag + vocabulary_size)
+    return prob
+
+  def class_prob(self, cls, doc):
+    prob = 1
+    for word in doc:
+      prob = prob * self.word_prob(word, cls)
+    return prob
+
   def __repr__(self):
     return "Classifier(%r, %r)" % (self.vocab, self.classes)
 
